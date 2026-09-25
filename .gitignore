@@ -38,4 +38,4 @@ build/
 __pycache__/
 *.py[cod]
 .next/
-*.next/
+*.next/.next/
