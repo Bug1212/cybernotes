@@ -20,7 +20,7 @@ export default async function TopicsIndex() {
             <h2 className="text-xl">{t.title}</h2>
             <ClearanceBadge level={t.clearance} />
           </div>
-          <p className="text-ink-soft">{t.description}</p>
+          <p className="text-ink-soft line-clamp-2">{t.description}</p>
         </Link>
       ))}
     </div>

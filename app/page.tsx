@@ -65,7 +65,7 @@ export default async function Home() {
                 <h3 className="text-lg">{t.title}</h3>
                 <ClearanceBadge level={t.clearance} />
               </div>
-              <p className="text-sm text-ink-soft">{t.description}</p>
+              <p className="text-sm text-ink-soft line-clamp-2">{t.description}</p>
             </Link>
           ))}
         </div>

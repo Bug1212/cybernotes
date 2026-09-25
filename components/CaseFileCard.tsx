@@ -13,7 +13,7 @@ export default function CaseFileCard({ article }: { article: Article }) {
         <ClearanceBadge level={article.clearance} />
       </div>
       <h3 className="text-xl mb-1">{article.title}</h3>
-      <p className="text-ink-soft">{article.summary}</p>
+      <p className="text-ink-soft line-clamp-2">{article.summary}</p>
     </Link>
   );
 }

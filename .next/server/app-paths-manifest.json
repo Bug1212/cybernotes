@@ -2,9 +2,5 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/page": "app/page.js",
   "/admin/review/page": "app/admin/review/page.js",
-  "/learning-paths/page": "app/learning-paths/page.js",
-  "/api/admin/articles/route": "app/api/admin/articles/route.js",
-  "/api/admin/tools/route": "app/api/admin/tools/route.js",
-  "/tools/page": "app/tools/page.js",
-  "/admin/tools/page": "app/admin/tools/page.js"
+  "/api/admin/articles/route": "app/api/admin/articles/route.js"
 }

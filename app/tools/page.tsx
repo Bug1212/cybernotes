@@ -28,7 +28,10 @@ export default async function ToolsIndex() {
             {categoryTools.map((t) => (
               <Link key={t.slug} href={`/tools/${t.slug}`} className="hub-card">
                 <h3 className="text-lg mb-1">{t.name}</h3>
-                <p className="text-sm text-ink-soft">{t.description}</p>
+                {/* line-clamp-3 caps any card at 3 lines regardless of how long the
+                    description is — a long/unstructured entry can no longer blow
+                    out the grid layout the way it did before. */}
+                <p className="text-sm text-ink-soft line-clamp-3">{t.description}</p>
                 {t.supportedOs.length > 0 && (
                   <p className="mt-2 font-mono text-xs text-ink-soft">{t.supportedOs.join(" · ")}</p>
                 )}
