@@ -3,40 +3,39 @@
 import { useEffect, useState } from "react";
 import { useAdminToken } from "@/lib/useAdminToken";
 
-interface CveRow {
+interface Cve {
   cve_id: string;
   slug: string;
   title: string;
   severity: string | null;
   cvss_score: number | null;
-  cwe: string | null;
   affected_software: string | null;
 }
 
 const emptyForm = {
   cve_id: "",
-  slug: "",
   title: "",
-  severity: "",
+  severity: "MEDIUM",
   cvss_score: "",
-  cwe: "",
   affected_software: "",
   affected_versions: "",
   vulnerability_type: "",
+  cwe: "",
   published_date: "",
+  patched_version: "",
   technical_explanation: "",
   attack_scenario: "",
   detection_methods: "",
   mitigation: "",
-  patched_version: "",
 };
 
-export default function CvesAdminClient() {
+export default function CvesClient() {
   const { token, save } = useAdminToken();
   const [tokenInput, setTokenInput] = useState("");
-  const [cves, setCves] = useState<CveRow[]>([]);
+  const [cves, setCves] = useState<Cve[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
@@ -60,7 +59,7 @@ export default function CvesAdminClient() {
     if (token) load(token);
   }, [token]);
 
-  async function submit(e: React.FormEvent) {
+  async function createCve(e: React.FormEvent) {
     e.preventDefault();
     if (!token) return;
     setSaving(true);
@@ -71,9 +70,7 @@ export default function CvesAdminClient() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           ...form,
-          severity: form.severity || null,
           cvss_score: form.cvss_score ? Number(form.cvss_score) : null,
-          published_date: form.published_date || null,
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? `HTTP ${res.status}`);
@@ -87,24 +84,27 @@ export default function CvesAdminClient() {
     }
   }
 
-  async function remove(cveId: string) {
+  async function deleteCve(cveId: string) {
     if (!token) return;
     if (!confirm(`Delete ${cveId}? This can't be undone.`)) return;
-    const res = await fetch(`/api/admin/cves/${cveId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) {
-      setError((await res.json()).error ?? `HTTP ${res.status}`);
-      return;
+    try {
+      const res = await fetch(`/api/admin/cves/${encodeURIComponent(cveId)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? `HTTP ${res.status}`);
+      load(token);
+    } catch (err) {
+      setError((err as Error).message);
     }
-    load(token);
   }
 
   if (!token) {
     return (
       <div className="mt-8 rounded border border-line bg-paper-dark p-4">
-        <label className="block font-mono text-xs uppercase tracking-wide text-ink-soft">Admin token</label>
+        <label className="block font-mono text-xs uppercase tracking-wide text-ink-soft">
+          Admin token
+        </label>
         <div className="mt-2 flex gap-2">
           <input
             type="password"
@@ -124,47 +124,41 @@ export default function CvesAdminClient() {
   return (
     <div className="mt-8 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft">{cves.length} entries</h2>
+        <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft">
+          {cves.length} CVE{cves.length === 1 ? "" : "s"}
+        </h2>
         <button
           onClick={() => setShowAddForm((s) => !s)}
           className="rounded bg-ink px-3 py-1.5 text-sm text-paper"
         >
-          {showAddForm ? "Cancel" : "+ Add CVE"}
+          {showAddForm ? "Cancel" : "+ New CVE"}
         </button>
       </div>
 
       {showAddForm && (
-        <form onSubmit={submit} className="space-y-3 rounded border border-line bg-paper-dark p-4">
+        <form onSubmit={createCve} className="space-y-3 rounded border border-line bg-paper-dark p-4">
           <div className="grid grid-cols-2 gap-3">
             <input
               required
-              placeholder="CVE ID (e.g. CVE-2024-12345)"
+              placeholder="CVE-2024-12345"
               value={form.cve_id}
               onChange={(e) => setForm({ ...form, cve_id: e.target.value })}
-              className="rounded border border-line bg-paper px-3 py-2 text-sm"
+              className="rounded border border-line bg-paper px-3 py-2 text-sm font-mono"
             />
             <input
               required
-              placeholder="slug (e.g. cve-2024-12345)"
-              value={form.slug}
-              onChange={(e) => setForm({ ...form, slug: e.target.value })}
+              placeholder="title"
+              value={form.title}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
             />
           </div>
-          <input
-            required
-            placeholder="title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            className="w-full rounded border border-line bg-paper px-3 py-2 text-sm"
-          />
           <div className="grid grid-cols-4 gap-3">
             <select
               value={form.severity}
               onChange={(e) => setForm({ ...form, severity: e.target.value })}
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
             >
-              <option value="">Severity…</option>
               <option value="LOW">LOW</option>
               <option value="MEDIUM">MEDIUM</option>
               <option value="HIGH">HIGH</option>
@@ -177,7 +171,7 @@ export default function CvesAdminClient() {
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
             />
             <input
-              placeholder="CWE (e.g. CWE-79)"
+              placeholder="CWE (e.g. CWE-89)"
               value={form.cwe}
               onChange={(e) => setForm({ ...form, cwe: e.target.value })}
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
@@ -189,7 +183,7 @@ export default function CvesAdminClient() {
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <input
               placeholder="affected software"
               value={form.affected_software}
@@ -202,6 +196,12 @@ export default function CvesAdminClient() {
               onChange={(e) => setForm({ ...form, affected_versions: e.target.value })}
               className="rounded border border-line bg-paper px-3 py-2 text-sm"
             />
+            <input
+              placeholder="patched version"
+              value={form.patched_version}
+              onChange={(e) => setForm({ ...form, patched_version: e.target.value })}
+              className="rounded border border-line bg-paper px-3 py-2 text-sm"
+            />
           </div>
           <input
             placeholder="vulnerability type (e.g. SQL Injection)"
@@ -210,45 +210,39 @@ export default function CvesAdminClient() {
             className="w-full rounded border border-line bg-paper px-3 py-2 text-sm"
           />
           <textarea
-            placeholder="technical explanation (markdown, optional)"
+            placeholder="technical explanation — what is it? (markdown)"
             value={form.technical_explanation}
             onChange={(e) => setForm({ ...form, technical_explanation: e.target.value })}
             rows={3}
             className="w-full rounded border border-line bg-paper px-3 py-2 font-mono text-sm"
           />
           <textarea
-            placeholder="attack scenario — defender-oriented, no working exploit code (markdown, optional)"
+            placeholder="attack scenario — defender-oriented, no working exploit code (markdown)"
             value={form.attack_scenario}
             onChange={(e) => setForm({ ...form, attack_scenario: e.target.value })}
             rows={3}
             className="w-full rounded border border-line bg-paper px-3 py-2 font-mono text-sm"
           />
           <textarea
-            placeholder="detection methods (markdown, optional)"
+            placeholder="detection methods (markdown)"
             value={form.detection_methods}
             onChange={(e) => setForm({ ...form, detection_methods: e.target.value })}
-            rows={2}
+            rows={3}
             className="w-full rounded border border-line bg-paper px-3 py-2 font-mono text-sm"
           />
           <textarea
-            placeholder="mitigation (markdown, optional)"
+            placeholder="mitigation (markdown)"
             value={form.mitigation}
             onChange={(e) => setForm({ ...form, mitigation: e.target.value })}
-            rows={2}
+            rows={3}
             className="w-full rounded border border-line bg-paper px-3 py-2 font-mono text-sm"
-          />
-          <input
-            placeholder="patched version (optional)"
-            value={form.patched_version}
-            onChange={(e) => setForm({ ...form, patched_version: e.target.value })}
-            className="w-full rounded border border-line bg-paper px-3 py-2 text-sm"
           />
           <button
             type="submit"
             disabled={saving}
             className="rounded bg-moss px-4 py-2 text-sm text-paper disabled:opacity-50"
           >
-            {saving ? "Saving…" : "Add CVE"}
+            {saving ? "Saving…" : "Create CVE"}
           </button>
         </form>
       )}
@@ -256,19 +250,24 @@ export default function CvesAdminClient() {
       {loading && <p className="text-sm text-ink-soft">Loading…</p>}
       {error && <p className="rounded border border-rust bg-paper-dark p-3 text-sm text-rust">{error}</p>}
 
-      {cves.map((cve) => (
-        <div key={cve.cve_id} className="rounded border border-line bg-paper-dark p-4">
+      {cves.map((c) => (
+        <div key={c.cve_id} className="rounded border border-line bg-paper-dark p-4">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs text-ink-soft">{cve.cve_id}</span>
-            <button onClick={() => remove(cve.cve_id)} className="rounded bg-rust px-3 py-1 text-xs text-paper">
+            <span className="font-mono text-xs text-ink-soft">{c.cve_id}</span>
+            <span className="font-mono text-xs uppercase text-rust">
+              {c.severity} {c.cvss_score ? `· ${c.cvss_score}` : ""}
+            </span>
+          </div>
+          <h2 className="mt-1 font-serif text-xl text-ink">{c.title}</h2>
+          {c.affected_software && <p className="mt-1 text-sm text-ink-soft">Affects: {c.affected_software}</p>}
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => deleteCve(c.cve_id)}
+              className="rounded bg-rust px-3 py-1.5 text-sm text-paper"
+            >
               Delete
             </button>
           </div>
-          <h3 className="mt-1 font-serif text-lg text-ink">{cve.title}</h3>
-          <p className="font-mono text-xs text-ink-soft">
-            {cve.severity ?? "—"} {cve.cvss_score ? `(${cve.cvss_score})` : ""} · {cve.cwe ?? "no CWE set"} ·{" "}
-            {cve.affected_software ?? "software not set"}
-          </p>
         </div>
       ))}
     </div>

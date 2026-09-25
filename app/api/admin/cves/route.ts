@@ -6,14 +6,16 @@ export const dynamic = "force-dynamic";
 function isAuthorized(req: NextRequest) {
   const secret = process.env.ADMIN_SECRET;
   if (!secret) return false;
-  const header = req.headers.get("authorization");
-  return header === `Bearer ${secret}`;
+  return req.headers.get("authorization") === `Bearer ${secret}`;
+}
+
+function slugify(cveId: string) {
+  return cveId.toLowerCase();
 }
 
 export async function GET(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!isAuthorized(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { data, error } = await supabaseAdmin
     .from("cves")
     .select("*")
@@ -23,39 +25,64 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAuthorized(req)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!isAuthorized(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const required = ["cve_id", "slug", "title"];
-  const missing = required.filter((k) => !body[k]);
-  if (missing.length) {
-    return NextResponse.json({ error: `Missing required field(s): ${missing.join(", ")}` }, { status: 400 });
+  const {
+    cve_id,
+    title,
+    severity,
+    cvss_score,
+    affected_software,
+    affected_versions,
+    vulnerability_type,
+    cwe,
+    published_date,
+    updated_date,
+    technical_explanation,
+    attack_scenario,
+    detection_methods,
+    mitigation,
+    patched_version,
+    source_references,
+    related_cves,
+  } = body;
+
+  if (!cve_id || !title) {
+    return NextResponse.json({ error: "cve_id and title are required" }, { status: 400 });
+  }
+  if (!/^CVE-\d{4}-\d+$/i.test(cve_id)) {
+    return NextResponse.json(
+      { error: "cve_id must look like CVE-2024-12345" },
+      { status: 400 }
+    );
   }
 
-  const insert = {
-    cve_id: body.cve_id, // e.g. CVE-2024-12345
-    slug: body.slug, // e.g. cve-2024-12345
-    title: body.title,
-    severity: body.severity ?? null, // LOW | MEDIUM | HIGH | CRITICAL
-    cvss_score: body.cvss_score ?? null,
-    affected_software: body.affected_software ?? null,
-    affected_versions: body.affected_versions ?? null,
-    vulnerability_type: body.vulnerability_type ?? null,
-    cwe: body.cwe ?? null, // e.g. CWE-79
-    published_date: body.published_date ?? null,
-    updated_date: body.updated_date ?? null,
-    technical_explanation: body.technical_explanation ?? null,
-    attack_scenario: body.attack_scenario ?? null,
-    detection_methods: body.detection_methods ?? null,
-    mitigation: body.mitigation ?? null,
-    patched_version: body.patched_version ?? null,
-    source_references: body.references ?? [],
-    related_cves: body.related_cves ?? [],
-  };
+  const { data, error } = await supabaseAdmin
+    .from("cves")
+    .insert({
+      cve_id: cve_id.toUpperCase(),
+      slug: slugify(cve_id),
+      title,
+      severity: severity || null,
+      cvss_score: cvss_score || null,
+      affected_software: affected_software || null,
+      affected_versions: affected_versions || null,
+      vulnerability_type: vulnerability_type || null,
+      cwe: cwe || null,
+      published_date: published_date || null,
+      updated_date: updated_date || null,
+      technical_explanation: technical_explanation || null,
+      attack_scenario: attack_scenario || null,
+      detection_methods: detection_methods || null,
+      mitigation: mitigation || null,
+      patched_version: patched_version || null,
+      source_references: source_references ?? [],
+      related_cves: related_cves ?? [],
+    })
+    .select()
+    .single();
 
-  const { data, error } = await supabaseAdmin.from("cves").insert(insert).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ cve: data }, { status: 201 });
 }
