@@ -604,8 +604,166 @@ video {
   padding-bottom: 0.5rem;
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
 }
+/* Typography for markdown article/tool/CVE bodies rendered via ReactMarkdown.
+     Referenced as `prose-content` on article/tool/cve detail pages but never
+     actually defined before — this is why headings, lists, and bold text had
+     no hierarchy or spacing. */
+.prose-content h1 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(27 27 24 / var(--tw-text-opacity, 1));
+}
+.prose-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  border-bottom-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(184 178 160 / var(--tw-border-opacity, 1));
+  padding-bottom: 0.25rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(27 27 24 / var(--tw-text-opacity, 1));
+}
+.prose-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(27 27 24 / var(--tw-text-opacity, 1));
+}
+.prose-content p {
+  margin-bottom: 1rem;
+}
+.prose-content ul {
+  margin-bottom: 1rem;
+  list-style-type: disc;
+}
+.prose-content ul > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.prose-content ul {
+  padding-left: 1.5rem;
+}
+.prose-content ol {
+  margin-bottom: 1rem;
+  list-style-type: decimal;
+}
+.prose-content ol > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.prose-content ol {
+  padding-left: 1.5rem;
+}
+.prose-content li {
+  padding-left: 0.25rem;
+}
+.prose-content strong {
+  font-weight: 600;
+  --tw-text-opacity: 1;
+  color: rgb(27 27 24 / var(--tw-text-opacity, 1));
+}
+.prose-content a {
+  --tw-text-opacity: 1;
+  color: rgb(43 69 112 / var(--tw-text-opacity, 1));
+  text-decoration-line: underline;
+}
+.prose-content blockquote {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-left-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: rgb(193 68 14 / var(--tw-border-opacity, 1));
+  padding-left: 1rem;
+  font-style: italic;
+  --tw-text-opacity: 1;
+  color: rgb(74 71 63 / var(--tw-text-opacity, 1));
+}
+.prose-content hr {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  --tw-border-opacity: 1;
+  border-color: rgb(184 178 160 / var(--tw-border-opacity, 1));
+}
+.prose-content code {
+  border-radius: 0.25rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(184 178 160 / var(--tw-border-opacity, 1));
+  --tw-bg-opacity: 1;
+  background-color: rgb(221 216 201 / var(--tw-bg-opacity, 1));
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.85em;
+}
+.prose-content pre {
+  margin-bottom: 1rem;
+  overflow-x: auto;
+  border-radius: 0.25rem;
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(184 178 160 / var(--tw-border-opacity, 1));
+  --tw-bg-opacity: 1;
+  background-color: rgb(221 216 201 / var(--tw-bg-opacity, 1));
+  padding: 1rem;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.prose-content pre code {
+  border-width: 0px;
+  background-color: transparent;
+  padding: 0px;
+}
+.prose-content table {
+  margin-bottom: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.prose-content th,
+  .prose-content td {
+  border-width: 1px;
+  --tw-border-opacity: 1;
+  border-color: rgb(184 178 160 / var(--tw-border-opacity, 1));
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  text-align: left;
+}
+.prose-content th {
+  --tw-bg-opacity: 1;
+  background-color: rgb(221 216 201 / var(--tw-bg-opacity, 1));
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+.visible {
+  visibility: visible;
+}
 .relative {
   position: relative;
+}
+.col-span-2 {
+  grid-column: span 2 / span 2;
 }
 .-mx-2 {
   margin-left: -0.5rem;
@@ -617,6 +775,9 @@ video {
 }
 .mb-1 {
   margin-bottom: 0.25rem;
+}
+.mb-10 {
+  margin-bottom: 2.5rem;
 }
 .mb-2 {
   margin-bottom: 0.5rem;
@@ -632,6 +793,9 @@ video {
 }
 .mb-8 {
   margin-bottom: 2rem;
+}
+.ml-auto {
+  margin-left: auto;
 }
 .mt-1 {
   margin-top: 0.25rem;
@@ -651,6 +815,9 @@ video {
 .mt-4 {
   margin-top: 1rem;
 }
+.mt-6 {
+  margin-top: 1.5rem;
+}
 .mt-8 {
   margin-top: 2rem;
 }
@@ -660,11 +827,17 @@ video {
 .flex {
   display: flex;
 }
+.table {
+  display: table;
+}
 .grid {
   display: grid;
 }
 .min-h-screen {
   min-height: 100vh;
+}
+.w-full {
+  width: 100%;
 }
 .max-w-3xl {
   max-width: 48rem;
@@ -687,8 +860,20 @@ video {
 .cursor-pointer {
   cursor: pointer;
 }
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 .flex-col {
   flex-direction: column;
+}
+.flex-wrap {
+  flex-wrap: wrap;
 }
 .items-start {
   align-items: flex-start;
@@ -708,16 +893,31 @@ video {
 .gap-2 {
   gap: 0.5rem;
 }
+.gap-3 {
+  gap: 0.75rem;
+}
 .gap-6 {
   gap: 1.5rem;
 }
 .gap-8 {
   gap: 2rem;
 }
+.gap-x-6 {
+  -moz-column-gap: 1.5rem;
+       column-gap: 1.5rem;
+}
+.gap-y-1 {
+  row-gap: 0.25rem;
+}
 .space-y-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
 }
 .space-y-6 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
@@ -861,6 +1061,9 @@ video {
 .pt-1 {
   padding-top: 0.25rem;
 }
+.pt-3 {
+  padding-top: 0.75rem;
+}
 .pt-4 {
   padding-top: 1rem;
 }
@@ -943,6 +1146,9 @@ video {
 .underline {
   text-decoration-line: underline;
 }
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
 .transition-colors {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -951,6 +1157,10 @@ video {
 
 .first\:border-t-0:first-child {
   border-top-width: 0px;
+}
+
+.disabled\:opacity-50:disabled {
+  opacity: 0.5;
 }
 
 .group:hover .group-hover\:bg-paper-dark\/60 {

@@ -25,9 +25,14 @@ function hashItem(sourceUrl: string, title: string) {
 }
 
 /**
- * Pull every enabled RSS source, normalize items, and dedupe by content_hash
- * against what's already in raw_articles. Returns only genuinely new items —
- * nothing is written to the DB here (see storeRawArticles).
+ * Pull every enabled RSS source and normalize items. Dedup against what's
+ * already in the DB happens at insert time (storeRawArticles uses upsert +
+ * ignoreDuplicates on content_hash) rather than here — with 20+ sources a
+ * pre-check using `.in("content_hash", [...hundreds of hashes])` builds a
+ * URL long enough that Cloudflare/PostgREST reject it outright (414 Request-
+ * URI Too Large). The unique constraint on content_hash is the real dedup
+ * mechanism; this function only dedupes within the current batch (the same
+ * item can appear in two feeds).
  */
 export async function fetchAllSources(): Promise<FetchedItem[]> {
   const { data: sources, error } = await supabaseAdmin
@@ -39,6 +44,7 @@ export async function fetchAllSources(): Promise<FetchedItem[]> {
   if (!sources?.length) return [];
 
   const results: FetchedItem[] = [];
+  const batchSeen = new Set<string>();
 
   for (const source of sources) {
     if (source.kind !== "rss") continue; // API sources: add a handler per-API as needed.
@@ -50,6 +56,10 @@ export async function fetchAllSources(): Promise<FetchedItem[]> {
         const title = (item.title ?? "").trim();
         if (!title) continue;
 
+        const contentHash = hashItem(link, title);
+        if (batchSeen.has(contentHash)) continue; // same item syndicated on two feeds
+        batchSeen.add(contentHash);
+
         results.push({
           sourceId: source.id,
           sourceUrl: link,
@@ -57,7 +67,7 @@ export async function fetchAllSources(): Promise<FetchedItem[]> {
           summary: (item.contentSnippet ?? item.summary ?? "").slice(0, 2000),
           content: (item["content:encoded"] ?? item.content ?? item.contentSnippet ?? "").slice(0, 20_000),
           publishedAt: item.isoDate ?? item.pubDate ?? null,
-          contentHash: hashItem(link, title),
+          contentHash,
         });
       }
     } catch (err) {
@@ -66,32 +76,15 @@ export async function fetchAllSources(): Promise<FetchedItem[]> {
     }
   }
 
-  return dedupeAgainstDatabase(results);
+  return results;
 }
 
-async function dedupeAgainstDatabase(items: FetchedItem[]): Promise<FetchedItem[]> {
-  if (!items.length) return items;
-
-  const hashes = items.map((i) => i.contentHash);
-  const { data: existing, error } = await supabaseAdmin
-    .from("raw_articles")
-    .select("content_hash")
-    .in("content_hash", hashes);
-
-  if (error) throw new Error(`Dedup lookup failed: ${error.message}`);
-
-  const seen = new Set(existing?.map((r) => r.content_hash) ?? []);
-  // Also dedupe within this batch (a title can appear in two feeds).
-  const batchSeen = new Set<string>();
-
-  return items.filter((item) => {
-    if (seen.has(item.contentHash) || batchSeen.has(item.contentHash)) return false;
-    batchSeen.add(item.contentHash);
-    return true;
-  });
-}
-
-/** Insert new items into raw_articles. Returns the inserted rows. */
+/**
+ * Insert new items into raw_articles. Uses upsert + ignoreDuplicates on the
+ * content_hash unique constraint instead of insert(), so items already seen
+ * in a prior run are silently skipped by Postgres rather than needing a
+ * separate lookup first. Returns only the rows that were actually new.
+ */
 export async function storeRawArticles(items: FetchedItem[]) {
   if (!items.length) return [];
 
@@ -106,9 +99,13 @@ export async function storeRawArticles(items: FetchedItem[]) {
     status: "pending" as const,
   }));
 
+  // ignoreDuplicates means conflicting rows are skipped, not updated — and
+  // Supabase/PostgREST only returns the rows actually written when you
+  // ask for .select() after an upsert, so `data` here is already just the
+  // genuinely-new ones.
   const { data, error } = await supabaseAdmin
     .from("raw_articles")
-    .insert(rows)
+    .upsert(rows, { onConflict: "content_hash", ignoreDuplicates: true })
     .select();
 
   if (error) throw new Error(`Failed to store raw articles: ${error.message}`);

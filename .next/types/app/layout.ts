@@ -1,4 +1,4 @@
-// File: C:\Users\tarun\Downloads\cybernotes-content-model (1)\cybernotes\app\layout.tsx
+// File: C:\Users\tarun\Desktop\groq\CyberNotes\app\cybernotes-content-model (1)\cybernotes\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

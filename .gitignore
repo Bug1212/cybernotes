@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 *.env
+.env.example    
 
 # Private keys and certificates
 *.pem
