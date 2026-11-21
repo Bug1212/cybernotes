@@ -39,3 +39,7 @@ __pycache__/
 *.py[cod]
 .next/
 *.next/.next/
+
+# Next.js generated files
+.next/
+out/
