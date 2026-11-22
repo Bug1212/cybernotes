@@ -1,4 +1,4 @@
-import ReactMarkdown from "react-markdown";
+import Markdown from "@/components/Markdown";
 
 export default function InfoCard({
   label,
@@ -20,7 +20,7 @@ export default function InfoCard({
     <section className={`mb-5 border-l-4 ${accentColor} bg-paper-dark rounded-r pl-5 pr-4 py-4`}>
       <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft mb-2">{label}</h2>
       <div className="prose-content text-sm">
-        <ReactMarkdown>{children}</ReactMarkdown>
+        <Markdown>{children}</Markdown>
       </div>
     </section>
   );

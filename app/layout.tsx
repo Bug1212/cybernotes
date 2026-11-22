@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-// @ts-ignore: Next.js provides CSS side-effect import handling.
 import './globals.css';
-// @ts-ignore: Next.js provides CSS side-effect import handling.
-import './theme.css';
+import "./theme.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
+  alternates: { types: { "application/rss+xml": "/feed.xml" } },
   title: "CyberNotes — Cybersecurity, Plainly Explained",
   description:
     "Complex cybersecurity topics, taught simply. Learning paths, articles, OSINT, web security, and more.",

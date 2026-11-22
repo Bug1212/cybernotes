@@ -10,32 +10,32 @@
   --c-line: 184 178 160;
 }
 
-/* Elements that only exist in one look. Classic shows .cn-only-classic;
-   Colorful shows .cn-only-colorful (display:revert restores each element's own default). */
-.cn-only-colorful { display: none; }
-[data-theme="colorful"] .cn-only-classic { display: none; }
-[data-theme="colorful"] .cn-only-colorful { display: revert; }
+/* Elements that only exist in one look. !important so no later display rule
+   (.cn-btn, .cn-pill, ...) can leak a Colorful-only block into Classic. */
+html:not([data-theme="colorful"]) .cn-only-colorful { display: none !important; }
+[data-theme="colorful"] .cn-only-classic { display: none !important; }
 
 /* ---------- Colorful palette: applied when <html data-theme="colorful"> ---------- */
 [data-theme="colorful"] {
-  --c-paper: 245 246 251;
-  --c-paper-dark: 233 236 248;
-  --c-ink: 18 20 43;
-  --c-ink-soft: 88 93 128;
-  --c-rust: 217 72 15;
-  --c-clearance: 79 70 229;
-  --c-moss: 10 127 95;
-  --c-line: 211 216 238;
+  /* Meaning: rust = danger/critical, clearance = info/primary, moss = safe/OK */
+  --c-paper: 244 247 250;
+  --c-paper-dark: 229 237 244;
+  --c-ink: 15 23 42;
+  --c-ink-soft: 71 85 105;
+  --c-rust: 194 65 12;
+  --c-clearance: 14 116 144;
+  --c-moss: 21 128 61;
+  --c-line: 203 213 225;
   --cn-surface: #ffffff;
-  --cn-grad: linear-gradient(135deg, #4f46e5, #8b5cf6 55%, #ff6b35);
-  --cn-glow: rgba(79, 70, 229, 0.16);
+  --cn-grad: linear-gradient(135deg, #0b3c5d, #0e7490 58%, #14b8a6);
+  --cn-glow: rgba(14, 116, 144, 0.16);
 }
 
 [data-theme="colorful"] body {
   font-family: "Inter", system-ui, sans-serif;
   background-image:
-    radial-gradient(900px 420px at 85% -10%, rgba(139, 92, 246, 0.16), transparent 60%),
-    radial-gradient(700px 380px at -5% 0%, rgba(255, 107, 53, 0.11), transparent 60%);
+    radial-gradient(900px 420px at 85% -10%, rgba(20, 184, 166, 0.14), transparent 60%),
+    radial-gradient(700px 380px at -5% 0%, rgba(11, 60, 93, 0.10), transparent 60%);
   background-repeat: no-repeat;
 }
 [data-theme="colorful"] h1,
@@ -66,7 +66,7 @@
 [data-theme="colorful"] header {
   border-bottom: 0;
   background: var(--cn-surface);
-  box-shadow: 0 1px 0 rgb(var(--c-line)), 0 10px 30px rgba(79, 70, 229, 0.07);
+  box-shadow: 0 1px 0 rgb(var(--c-line)), 0 10px 30px rgba(14, 116, 144, 0.07);
 }
 [data-theme="colorful"] header::before {
   content: "";
@@ -94,9 +94,13 @@
   place-items: center;
   font-size: 18px;
   color: #fff;
-  background: linear-gradient(135deg, #4f46e5, #8b5cf6 55%, #ff6b35);
+  background: linear-gradient(135deg, #0b3c5d, #0e7490 58%, #14b8a6);
 }
 [data-theme="colorful"] .cn-logo-mark { display: grid; }
+
+/* header: logo row, then nav row; nav sits on the bottom rule (folder tabs) in Classic */
+.cn-header-inner { padding-bottom: 0; }
+[data-theme="colorful"] .cn-header-inner { padding-bottom: 14px; }
 
 /* nav pills */
 [data-theme="colorful"] header nav { gap: 6px; flex-wrap: wrap; }
@@ -123,7 +127,7 @@
 /* accent colors cycled across cards and stats */
 [data-theme="colorful"] :is(.hub-card, .cn-stat):nth-child(4n + 1) { --cn-accent: rgb(var(--c-clearance)); }
 [data-theme="colorful"] :is(.hub-card, .cn-stat):nth-child(4n + 2) { --cn-accent: rgb(var(--c-moss)); }
-[data-theme="colorful"] :is(.hub-card, .cn-stat):nth-child(4n + 3) { --cn-accent: #e8a100; }
+[data-theme="colorful"] :is(.hub-card, .cn-stat):nth-child(4n + 3) { --cn-accent: #b45309; }
 [data-theme="colorful"] :is(.hub-card, .cn-stat):nth-child(4n + 4) { --cn-accent: rgb(var(--c-rust)); }
 
 /* topic / tool cards */
@@ -132,7 +136,7 @@
   border-radius: 14px;
   border: 1px solid rgb(var(--c-line));
   border-left: 4px solid var(--cn-accent, rgb(var(--c-clearance)));
-  box-shadow: 0 1px 2px rgba(18, 20, 43, 0.04);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 [data-theme="colorful"] .hub-card:hover {
   border-color: var(--cn-accent, rgb(var(--c-clearance)));
@@ -190,11 +194,11 @@
   border: 1px solid transparent;
   transition: transform 0.15s, border-color 0.15s;
 }
-.cn-btn-p { background: linear-gradient(135deg, #4f46e5, #8b5cf6 55%, #ff6b35); color: #fff; box-shadow: 0 8px 24px rgba(79, 70, 229, 0.16); }
+.cn-btn-p { background: linear-gradient(135deg, #0b3c5d, #0e7490 58%, #14b8a6); color: #fff; box-shadow: 0 8px 24px rgba(14, 116, 144, 0.16); }
 .cn-btn-p:hover { transform: translateY(-2px); }
 .cn-btn-s { background: #fff; border-color: rgb(var(--c-line)); color: rgb(var(--c-ink)); }
 .cn-btn-s:hover { border-color: rgb(var(--c-clearance)); }
-.cn-btn-w { background: #fff; color: #12142b; }
+.cn-btn-w { background: #fff; color: #0f172a; }
 
 /* decorative terminal card */
 [data-theme="colorful"] .cn-term {
@@ -220,8 +224,8 @@
   right: 14px;
   bottom: 14px;
   transform: rotate(-8deg);
-  border: 3px solid #ff6b35;
-  color: #ff6b35;
+  border: 3px solid #14b8a6;
+  color: #14b8a6;
   font: 700 11px "IBM Plex Mono", ui-monospace, monospace;
   padding: 5px 9px;
   border-radius: 4px;
@@ -264,7 +268,7 @@
   box-shadow: 0 20px 50px var(--cn-glow);
 }
 .cn-feat__art {
-  background: linear-gradient(135deg, #4f46e5, #8b5cf6 55%, #ff6b35);
+  background: linear-gradient(135deg, #0b3c5d, #0e7490 58%, #14b8a6);
   min-height: 240px;
   place-items: center;
   font-size: 84px;
@@ -328,10 +332,10 @@
   color: var(--c);
   background: color-mix(in srgb, var(--c) 10%, transparent);
 }
-.cn-sev-CRITICAL { --c: rgb(var(--c-rust)); }
-.cn-sev-HIGH { --c: #b7791f; }
-.cn-sev-MEDIUM { --c: rgb(var(--c-clearance)); }
-.cn-sev-LOW { --c: rgb(var(--c-moss)); }
+.cn-sev-CRITICAL { --c: #b91c1c; }
+.cn-sev-HIGH { --c: #c2410c; }
+.cn-sev-MEDIUM { --c: #b45309; }
+.cn-sev-LOW { --c: #15803d; }
 
 /* call-to-action band */
 [data-theme="colorful"] .cn-band {
@@ -387,7 +391,7 @@
   transition: transform 0.2s, background 0.2s;
 }
 .theme-toggle[aria-checked="true"] .theme-toggle__track {
-  background: linear-gradient(135deg, #4f46e5, #8b5cf6 55%, #ff6b35);
+  background: linear-gradient(135deg, #0b3c5d, #0e7490 58%, #14b8a6);
   border-color: transparent;
 }
 .theme-toggle[aria-checked="true"] .theme-toggle__knob { transform: translateX(18px); background: #fff; }

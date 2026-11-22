@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { supabaseAdmin } from "../supabase";
 
 const parser = new Parser({
-  timeout: 15_000,
+  timeout: 10_000,
   headers: { "User-Agent": "CyberNotesBot/1.0 (+https://cybernotes.example)" },
 });
 
@@ -46,35 +46,38 @@ export async function fetchAllSources(): Promise<FetchedItem[]> {
   const results: FetchedItem[] = [];
   const batchSeen = new Set<string>();
 
-  for (const source of sources) {
-    if (source.kind !== "rss") continue; // API sources: add a handler per-API as needed.
+  // Fetch all feeds in parallel (sequential fetching of 20+ feeds is too slow for a serverless time limit).
+  const rssSources = sources.filter((s) => s.kind === "rss"); // API sources: add a handler per-API as needed.
+  const settled = await Promise.allSettled(rssSources.map((source) => parser.parseURL(source.url)));
 
-    try {
-      const feed = await parser.parseURL(source.url);
-      for (const item of feed.items) {
-        const link = item.link ?? source.url;
-        const title = (item.title ?? "").trim();
-        if (!title) continue;
-
-        const contentHash = hashItem(link, title);
-        if (batchSeen.has(contentHash)) continue; // same item syndicated on two feeds
-        batchSeen.add(contentHash);
-
-        results.push({
-          sourceId: source.id,
-          sourceUrl: link,
-          title,
-          summary: (item.contentSnippet ?? item.summary ?? "").slice(0, 2000),
-          content: (item["content:encoded"] ?? item.content ?? item.contentSnippet ?? "").slice(0, 20_000),
-          publishedAt: item.isoDate ?? item.pubDate ?? null,
-          contentHash,
-        });
-      }
-    } catch (err) {
+  settled.forEach((outcome, i) => {
+    const source = rssSources[i];
+    if (outcome.status === "rejected") {
       // One bad feed shouldn't kill the whole run.
-      console.error(`[pipeline] Failed to fetch source ${source.url}:`, err);
+      console.error(`[pipeline] Failed to fetch source ${source.url}:`, outcome.reason);
+      return;
     }
-  }
+    // Newest 15 per feed: some feeds (e.g. CISA) return years of archive on the first run.
+    for (const item of outcome.value.items.slice(0, 15)) {
+      const link = item.link ?? source.url;
+      const title = (item.title ?? "").trim();
+      if (!title) continue;
+
+      const contentHash = hashItem(link, title);
+      if (batchSeen.has(contentHash)) continue; // same item syndicated on two feeds
+      batchSeen.add(contentHash);
+
+      results.push({
+        sourceId: source.id,
+        sourceUrl: link,
+        title,
+        summary: (item.contentSnippet ?? item.summary ?? "").slice(0, 2000),
+        content: (item["content:encoded"] ?? item.content ?? item.contentSnippet ?? "").slice(0, 20_000),
+        publishedAt: item.isoDate ?? item.pubDate ?? null,
+        contentHash,
+      });
+    }
+  });
 
   return results;
 }

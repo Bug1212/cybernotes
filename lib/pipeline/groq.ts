@@ -31,6 +31,9 @@ export async function groqJSON<T>(systemPrompt: string, userPrompt: string): Pro
     ],
   });
 
+  if (completion.choices[0]?.finish_reason === "length") {
+    throw new Error("Groq output was cut off (hit max_tokens) — discarding the incomplete article");
+  }
   const raw = completion.choices[0]?.message?.content ?? "";
   const cleaned = raw.replace(/```json|```/g, "").trim();
 

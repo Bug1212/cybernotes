@@ -50,7 +50,7 @@ export default function About() {
         <h2>How content is made</h2>
         <p>
           Some articles are written by hand and some are drafted with AI assistance from published
-          security sources, then fact-checked and reviewed by a person before publishing. We link to
+          security sources, then fact-checked automatically against those sources and spot-checked by a person. We link to
           primary sources and correct mistakes. Read the full details in our{" "}
           <Link href="/editorial-policy">Editorial Policy</Link>.
         </p>

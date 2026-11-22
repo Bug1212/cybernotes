@@ -24,7 +24,7 @@ export default function EditorialPolicy() {
 
       <h2>2. How articles are produced</h2>
       <p>
-        Some articles are written by hand. Others are drafted with the help of AI language models,
+        Some articles are written by hand. Others are drafted with the help of AI language models (via the Groq API),
         using published security news, advisories, and research as source material. AI is a drafting
         tool, not an author: it does not decide what gets published.
       </p>
@@ -39,9 +39,13 @@ export default function EditorialPolicy() {
           and any claim the source does not support is flagged.
         </li>
         <li>
-          <strong>Human review before publishing.</strong> A person reviews every AI-assisted article
-          before it goes live. Drafts with flagged claims are held back until the issues are fixed or
-          the draft is rejected.
+          <strong>Automated quality checks, then human oversight.</strong> An AI draft is published
+          automatically only if it passes every check: its claims are supported by the source
+          material, it is complete (no truncated or placeholder text), it contains defensive
+          guidance, it links its sources, and it is not a near-duplicate of an existing article. We
+          publish at most one such article per day. Drafts that fail any check are held back for
+          manual review instead of being published. Published AI articles are spot-checked by a
+          person after publication and are corrected or unpublished if a problem is found.
         </li>
         <li>
           <strong>Attribution.</strong> AI-assisted articles link to their primary sources.

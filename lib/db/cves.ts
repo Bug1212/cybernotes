@@ -28,7 +28,8 @@ export async function getCves(): Promise<CVE[]> {
   const { data, error } = await supabasePublic
     .from("cves")
     .select("*")
-    .order("published_date", { ascending: false });
+    .order("published_date", { ascending: false })
+    .limit(300);
   if (error) throw new Error(`getCves: ${error.message}`);
   return (data ?? []).map(mapCve);
 }

@@ -34,8 +34,8 @@ export default function Disclaimer() {
 
       <h2>AI-assisted content</h2>
       <p>
-        Some articles are drafted with the help of AI tools and then reviewed before publication, as
-        described in our <a href="/editorial-policy">Editorial Policy</a>. Such articles link to
+        Some articles are drafted with the help of AI tools, checked automatically against their sources,
+        and spot-checked by a person after publication, as described in our <a href="/editorial-policy">Editorial Policy</a>. Such articles link to
         their primary sources so you can verify claims yourself.
       </p>
 

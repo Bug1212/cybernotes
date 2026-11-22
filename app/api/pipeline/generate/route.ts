@@ -11,7 +11,7 @@ function isAuthorized(req: NextRequest) {
   return header === `Bearer ${secret}`;
 }
 
-export async function POST(req: NextRequest) {
+async function handle(req: NextRequest) {
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -22,10 +22,14 @@ export async function POST(req: NextRequest) {
     // draft more per run without scraping the bottom of the barrel. Still
     // all gated by /admin/review — raising this increases draft volume,
     // not publish volume.
-    const generated = await generatePendingArticles(1);
+    const generated = await generatePendingArticles(5);
     return NextResponse.json({ generated: generated.length, articles: generated.map((a) => a?.slug) });
   } catch (err) {
     console.error("[api/pipeline/generate]", err);
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
 }
+
+// Vercel Cron calls with GET; manual triggers can still use POST.
+export const GET = handle;
+export const POST = handle;

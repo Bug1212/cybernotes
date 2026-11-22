@@ -10,7 +10,7 @@ function isAuthorized(req: NextRequest) {
   return header === `Bearer ${secret}`;
 }
 
-const ALLOWED_ACTIONS = ["approve", "reject", "publish", "edit"] as const;
+const ALLOWED_ACTIONS = ["approve", "reject", "publish", "unpublish", "edit"] as const;
 type Action = (typeof ALLOWED_ACTIONS)[number];
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -36,6 +36,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       break;
     case "publish":
       update = { status: "published", published_at: new Date().toISOString() };
+      break;
+    case "unpublish":
+      // Pull a live article back into the review queue (used to undo an auto-publish).
+      update = { status: "in_review", published_at: null, reviewer_notes: body.notes ?? "Unpublished by admin" };
       break;
     case "edit":
       // Human touch-ups before approval: title/summary/body/topic_slug/clearance.

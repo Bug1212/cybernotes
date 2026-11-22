@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
+import Markdown from "@/components/Markdown";
 import ClearanceBadge from "@/components/ClearanceBadge";
 import { getArticleBySlug } from "@/lib/db/articles";
 
@@ -20,7 +20,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       <p className="text-lg text-ink-soft mb-8">{article.summary}</p>
       <div className="redaction-bar-thin" />
       <div className="prose-content leading-relaxed">
-        <ReactMarkdown>{article.body}</ReactMarkdown>
+        <Markdown>{article.body}</Markdown>
       </div>
 
       {article.isAiGenerated && article.primarySources.length > 0 && (

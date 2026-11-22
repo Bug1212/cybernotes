@@ -32,6 +32,7 @@ export default function ReviewClient() {
   const { token, save } = useAdminToken();
   const [tokenInput, setTokenInput] = useState("");
   const [articles, setArticles] = useState<GeneratedArticle[]>([]);
+  const [published, setPublished] = useState<GeneratedArticle[]>([]);
   const [debug, setDebug] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +52,9 @@ export default function ReviewClient() {
       const { articles, debug } = await res.json();
       setArticles(articles);
       setDebug(debug ?? null);
+      // Recently published AI articles (auto-published ones included) so they can be spot-checked / unpublished.
+      const pub = await fetch("/api/admin/articles?status=published&ai=1&limit=10", { headers: { Authorization: `Bearer ${t}` } });
+      if (pub.ok) setPublished((await pub.json()).articles ?? []);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -62,7 +66,7 @@ export default function ReviewClient() {
     if (token) load(token);
   }, [token]);
 
-  async function act(id: string, action: "approve" | "reject" | "publish", notes?: string) {
+  async function act(id: string, action: "approve" | "reject" | "publish" | "unpublish", notes?: string) {
     if (!token) return;
     const res = await fetch(`/api/admin/articles/${id}`, {
       method: "PATCH",
@@ -322,6 +326,25 @@ export default function ReviewClient() {
           </div>
         </article>
       ))}
+
+      {published.length > 0 && (
+        <div className="pt-6">
+          <h2 className="font-mono text-xs uppercase tracking-wide text-ink-soft mb-3">
+            Recently published AI articles — spot-check these
+          </h2>
+          {published.map((a) => (
+            <div key={a.id} className="mb-3 flex items-center justify-between gap-3 rounded border border-line bg-paper-dark px-4 py-3 text-sm">
+              <div>
+                <a href={`/articles/${a.slug}`} target="_blank" rel="noreferrer" className="font-semibold underline">{a.title}</a>
+                <p className="font-mono text-xs text-ink-soft">{a.case_number}</p>
+              </div>
+              <button onClick={() => act(a.id, "unpublish")} className="shrink-0 rounded bg-rust px-3 py-1.5 text-sm text-paper">
+                Unpublish
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
