@@ -11,6 +11,7 @@ const reasons = [
   { title: "Report an error", body: "Spotted something inaccurate or out of date? Tell us the page and what is wrong — we correct confirmed errors promptly." },
   { title: "Security report", body: "Found a vulnerability in this website? Please report it privately and give us reasonable time to fix it before disclosing." },
   { title: "Content requests", body: "Want a topic, tool, or CVE covered? Send us a suggestion." },
+  { title: "YouTube & privacy requests", body: "Questions or complaints about how we use YouTube API data, or requests to delete data we hold." },
   { title: "Business & other", body: "Partnerships, takedown requests, privacy requests, or anything else." },
 ];
 

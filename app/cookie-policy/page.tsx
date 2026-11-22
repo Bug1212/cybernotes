@@ -28,6 +28,15 @@ export default function CookiePolicy() {
         cookies of its own at the time of the last update above. Our hosting infrastructure may use
         technical cookies or similar mechanisms strictly needed to deliver pages securely.
       </p>
+      <h3>Embedded YouTube videos</h3>
+      <p>
+        Some pages embed videos from YouTube. When you load or play an embedded player, YouTube (Google) may set
+        cookies and collect data about your viewing, as described in the{" "}
+        <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer">
+          Google Privacy Policy
+        </a>
+        . We do not control these cookies.
+      </p>
       <h3>Advertising (when enabled)</h3>
       <p>
         If we enable advertising, third-party vendors such as Google use cookies to serve and measure

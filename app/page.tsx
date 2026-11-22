@@ -7,6 +7,7 @@ import { getTools } from "@/lib/db/tools";
 import { getCves } from "@/lib/db/cves";
 import { getSiteStats } from "@/lib/db/stats";
 import { siteConfig } from "@/lib/siteConfig";
+import YouTubeSection from "@/components/YouTubeSection";
 
 export const dynamic = "force-dynamic"; // renders per-request; content changes daily via the pipeline, so build-time prerendering isn't useful here
 
@@ -194,6 +195,8 @@ export default async function Home() {
           )}
         </div>
       </section>
+
+      <YouTubeSection />
 
       <section className="cn-band cn-only-colorful">
         <div>
