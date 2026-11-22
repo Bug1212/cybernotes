@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import LegalPage from "@/components/LegalPage";
-import { siteConfig } from "@/lib/siteConfig";
+import { siteConfig, youtubeConfig, YOUTUBE_TOS_URL, GOOGLE_PRIVACY_URL } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   title: "Terms & Conditions — CyberNotes",
@@ -67,35 +67,46 @@ export default function Terms() {
         ad is not an endorsement.
       </p>
 
-      <h2>7. Disclaimer of warranties</h2>
+      <h2 id="youtube-api-services">7. YouTube API Services</h2>
+      <p>
+        Parts of {siteConfig.name}, including our video upload client ({youtubeConfig.apiClientName}), use YouTube
+        API Services. By using these features you agree to be bound by the{" "}
+        <a href={YOUTUBE_TOS_URL} target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a>{" "}
+        ({YOUTUBE_TOS_URL}). Google&rsquo;s handling of your information is described in the{" "}
+        <a href={GOOGLE_PRIVACY_URL} target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>, and ours
+        in our <a href="/privacy-policy#youtube-api-services">Privacy Policy</a>. YouTube and the YouTube logo are
+        trademarks of Google LLC; {siteConfig.name} is not affiliated with or endorsed by YouTube or Google.
+      </p>
+
+      <h2>8. Disclaimer of warranties</h2>
       <p>
         The Site and its content are provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo;
         without warranties of any kind, express or implied, including fitness for a particular
         purpose, accuracy, or non-infringement. See also our <a href="/disclaimer">Disclaimer</a>.
       </p>
 
-      <h2>8. Limitation of liability</h2>
+      <h2>9. Limitation of liability</h2>
       <p>
         To the maximum extent permitted by law, {siteConfig.ownerName} will not be liable for any
         indirect, incidental, special, consequential, or punitive damages, or any loss of data,
         profits, or business, arising from your use of the Site or reliance on its content.
       </p>
 
-      <h2>9. Changes to the Site and these Terms</h2>
+      <h2>10. Changes to the Site and these Terms</h2>
       <p>
         We may modify or discontinue any part of the Site and may update these Terms at any time. The
         &ldquo;Last updated&rdquo; date shows the current version; continued use means you accept the
         changes.
       </p>
 
-      <h2>10. Governing law</h2>
+      <h2>11. Governing law</h2>
       <p>
         These Terms are governed by the laws of {siteConfig.jurisdiction}, without regard to conflict
         of law rules, and courts in {siteConfig.jurisdiction} have jurisdiction over disputes, subject
         to any mandatory consumer protections in your country.
       </p>
 
-      <h2>11. Contact</h2>
+      <h2>12. Contact</h2>
       <p>
         Questions about these Terms: <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
       </p>

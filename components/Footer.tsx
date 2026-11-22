@@ -26,6 +26,8 @@ const columns = [
       { href: "/terms", label: "Terms & Conditions" },
       { href: "/cookie-policy", label: "Cookie Policy" },
       { href: "/disclaimer", label: "Disclaimer" },
+      { href: "https://www.youtube.com/t/terms", label: "YouTube Terms of Service" },
+      { href: "http://www.google.com/policies/privacy", label: "Google Privacy Policy" },
     ],
   },
 ];
@@ -49,9 +51,15 @@ export default function Footer() {
               <ul className="space-y-2 text-sm">
                 {col.links.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="hover:underline">
-                      {l.label}
-                    </Link>
+                    {l.href.startsWith("http") ? (
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link href={l.href} className="hover:underline">
+                        {l.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
