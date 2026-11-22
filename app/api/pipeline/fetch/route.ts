@@ -11,7 +11,7 @@ function isAuthorized(req: NextRequest) {
   return header === `Bearer ${secret}`;
 }
 
-export async function POST(req: NextRequest) {
+async function handle(req: NextRequest) {
   if (!isAuthorized(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -25,3 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
 }
+
+// Vercel Cron calls with GET; manual triggers can still use POST.
+export const GET = handle;
+export const POST = handle;

@@ -1,23 +1,21 @@
-const terms = [
-  { term: "CVE", definition: "A public ID number for a specific, known security vulnerability." },
-  { term: "Zero-day", definition: "A vulnerability being exploited before the vendor has a fix for it." },
-  { term: "Phishing", definition: "Tricking someone into handing over information or access by pretending to be trustworthy." },
-  { term: "Firewall", definition: "A gatekeeper that decides which network traffic is allowed in or out." },
-];
+import type { Metadata } from "next";
+import GlossaryClient from "./GlossaryClient";
+import { GLOSSARY, GLOSSARY_CATEGORIES } from "@/lib/glossaryData";
 
-export default function Glossary() {
+export const metadata: Metadata = {
+  title: "Cybersecurity Glossary — CyberNotes",
+  description: "Plain-language cybersecurity terms with practical examples, from beginner to advanced. Search and filter by category.",
+};
+
+export default function GlossaryPage() {
   return (
     <div>
-      <h1 className="text-3xl mb-8">Glossary</h1>
-      <p className="text-ink-soft mb-8 max-w-xl">
-        Plain-language definitions for terms you'll run into across CyberNotes.
+      <h1 className="text-3xl mb-2">Glossary</h1>
+      <p className="text-ink-soft mb-6 max-w-xl">
+        {GLOSSARY.length} cybersecurity terms in plain language, each with a practical example.
+        Search, or filter by category and level.
       </p>
-      {terms.map((t) => (
-        <div key={t.term} className="border-t border-line py-5 first:border-t-0">
-          <h2 className="font-mono text-lg mb-1">{t.term}</h2>
-          <p className="text-ink-soft">{t.definition}</p>
-        </div>
-      ))}
+      <GlossaryClient terms={GLOSSARY} categories={GLOSSARY_CATEGORIES} />
     </div>
   );
 }

@@ -16,6 +16,7 @@ const columns = [
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
       { href: "/editorial-policy", label: "Editorial Policy" },
+      { href: "/feed.xml", label: "RSS Feed" },
     ],
   },
   {

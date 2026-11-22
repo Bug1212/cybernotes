@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
+import Markdown from "@/components/Markdown";
 import MetaBadge from "@/components/MetaBadge";
 import InfoCard from "@/components/InfoCard";
 import { getToolBySlug } from "@/lib/db/tools";
@@ -28,7 +28,7 @@ export default async function ToolPage({ params }: { params: { slug: string } })
           from admin forms (headings, line breaks, code) from collapsing into
           one unreadable paragraph. */}
       <div className="prose-content text-lg text-ink-soft mb-6">
-        <ReactMarkdown>{tool.description}</ReactMarkdown>
+        <Markdown>{tool.description}</Markdown>
       </div>
 
       <div className="redaction-bar-thin" />

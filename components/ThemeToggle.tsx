@@ -35,9 +35,9 @@ export default function ThemeToggle() {
       aria-checked={on}
       onClick={toggle}
       className="theme-toggle"
-      title={on ? "Switch to the classic look" : "Switch to the colorful look"}
+      title={on ? "Switch to the classic dossier theme" : "Switch to the cyber theme"}
     >
-      <span>Colorful</span>
+      <span>Cyber theme</span>
       <span className="theme-toggle__track" aria-hidden="true">
         <span className="theme-toggle__knob" />
       </span>

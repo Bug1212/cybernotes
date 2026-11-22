@@ -40,6 +40,11 @@ export default async function CvesIndex() {
           </Link>
         ))}
       </div>
+      <p className="mt-10 border-t border-line pt-4 font-mono text-xs text-ink-soft">
+        Data from the U.S. NIST National Vulnerability Database (NVD) and CISA&rsquo;s Known Exploited
+        Vulnerabilities catalog. This product uses data from the NVD API but is not endorsed or
+        certified by the NVD. Always confirm against the vendor&rsquo;s advisory.
+      </p>
     </div>
   );
 }

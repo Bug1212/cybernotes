@@ -1,6 +1,6 @@
 {
   "crons": [
-    { "path": "/api/pipeline/fetch", "schedule": "0 5 * * *" },
-    { "path": "/api/pipeline/generate", "schedule": "30 5 * * *" }
+    { "path": "/api/pipeline/daily", "schedule": "0 3 * * *" },
+    { "path": "/api/pipeline/cves", "schedule": "30 3 * * *" }
   ]
 }
