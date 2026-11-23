@@ -1,0 +1,18 @@
+name: Sync CVEs
+
+# Twice a day: add new CVEs from CISA's Known Exploited Vulnerabilities catalog and NIST NVD.
+on:
+  schedule:
+    - cron: "20 4,16 * * *"
+  workflow_dispatch:
+
+jobs:
+  cves:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Sync CVEs
+        run: |
+          curl --fail-with-body --silent --show-error --retry 2 --retry-delay 30 --max-time 90 \
+            -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/pipeline/cves"

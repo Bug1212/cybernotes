@@ -1,0 +1,24 @@
+name: Content pipeline (fetch + draft)
+
+# Every 6 hours: pull new items from the RSS sources, then draft up to 2 articles with Groq.
+# Drafts wait until the daily publish workflow picks the best one that passes the quality gate.
+on:
+  schedule:
+    - cron: "15 */6 * * *"   # minute 15 of every 6th hour (UTC)
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fetch sources
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 15 --max-time 120 \
+            -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/pipeline/fetch"
+      - name: Draft articles
+        run: |
+          curl --fail-with-body --silent --show-error --retry 2 --retry-delay 20 --max-time 120 \
+            -X POST -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/pipeline/generate?count=2"
