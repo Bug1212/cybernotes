@@ -1,4 +1,4 @@
-import { supabasePublic } from "../supabasePublic";
+import { supabaseRead } from "../supabaseRead";
 import { CVE } from "../types";
 
 function mapCve(row: any): CVE {
@@ -25,7 +25,7 @@ function mapCve(row: any): CVE {
 }
 
 export async function getCves(): Promise<CVE[]> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("cves")
     .select("*")
     .order("published_date", { ascending: false })
@@ -35,7 +35,7 @@ export async function getCves(): Promise<CVE[]> {
 }
 
 export async function getCveBySlug(slug: string): Promise<CVE | null> {
-  const { data, error } = await supabasePublic.from("cves").select("*").eq("slug", slug).maybeSingle();
+  const { data, error } = await supabaseRead.from("cves").select("*").eq("slug", slug).maybeSingle();
   if (error) throw new Error(`getCveBySlug: ${error.message}`);
   return data ? mapCve(data) : null;
 }

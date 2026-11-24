@@ -1,4 +1,4 @@
-import { supabasePublic } from "@/lib/supabasePublic";
+import { supabaseRead } from "@/lib/supabaseRead";
 import { siteConfig } from "@/lib/siteConfig";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +9,7 @@ const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 export async function GET() {
   let items = "";
   try {
-    const { data } = await supabasePublic
+    const { data } = await supabaseRead
       .from("articles")
       .select("slug, title, summary, published_at")
       .eq("status", "published")

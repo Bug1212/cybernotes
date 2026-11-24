@@ -1,4 +1,4 @@
-import { supabasePublic } from "../supabasePublic";
+import { supabaseRead } from "../supabaseRead";
 import { Tool } from "../types";
 
 function mapTool(row: any): Tool {
@@ -18,13 +18,13 @@ function mapTool(row: any): Tool {
 }
 
 export async function getTools(): Promise<Tool[]> {
-  const { data, error } = await supabasePublic.from("tools").select("*").order("name", { ascending: true });
+  const { data, error } = await supabaseRead.from("tools").select("*").order("name", { ascending: true });
   if (error) throw new Error(`getTools: ${error.message}`);
   return (data ?? []).map(mapTool);
 }
 
 export async function getToolsByCategory(category: string): Promise<Tool[]> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("tools")
     .select("*")
     .eq("category", category)
@@ -34,7 +34,7 @@ export async function getToolsByCategory(category: string): Promise<Tool[]> {
 }
 
 export async function getToolBySlug(slug: string): Promise<Tool | null> {
-  const { data, error } = await supabasePublic.from("tools").select("*").eq("slug", slug).maybeSingle();
+  const { data, error } = await supabaseRead.from("tools").select("*").eq("slug", slug).maybeSingle();
   if (error) throw new Error(`getToolBySlug: ${error.message}`);
   return data ? mapTool(data) : null;
 }

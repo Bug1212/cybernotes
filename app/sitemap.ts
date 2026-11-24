@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/siteConfig";
-import { supabasePublic } from "@/lib/supabasePublic";
+// import { supabasePublic } from "@/lib/supabasePublic";
+import { supabaseRead } from "@/lib/supabaseRead";
 import { QUIZ_CATEGORIES } from "@/lib/quizData";
 
 export const dynamic = "force-dynamic";
@@ -14,10 +15,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const [articles, topics, tools, cves] = await Promise.all([
-      supabasePublic.from("articles").select("slug, published_at").eq("status", "published").limit(5000),
-      supabasePublic.from("topics").select("slug"),
-      supabasePublic.from("tools").select("slug"),
-      supabasePublic.from("cves").select("slug, updated_date, published_date").limit(5000),
+      supabaseRead.from("articles").select("slug, published_at").eq("status", "published").limit(5000),
+      supabaseRead.from("topics").select("slug"),
+      supabaseRead.from("tools").select("slug"),
+      supabaseRead.from("cves").select("slug, updated_date, published_date").limit(5000),
     ]);
     articles.data?.forEach((a) => entries.push({ url: `${base}/articles/${a.slug}`, lastModified: a.published_at ? new Date(a.published_at) : now, priority: 0.8 }));
     topics.data?.forEach((t) => entries.push({ url: `${base}/topics/${t.slug}`, lastModified: now, priority: 0.7 }));
