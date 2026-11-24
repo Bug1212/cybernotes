@@ -1,10 +1,10 @@
-import { supabasePublic } from "../supabasePublic";
+import { supabaseRead } from "../supabaseRead";
 
 // Counts shown in the Colorful home page stats strip. Never throws — a failed
 // count just shows 0 rather than breaking the home page.
 async function count(table: string, published = false): Promise<number> {
   try {
-    let q = supabasePublic.from(table).select("*", { count: "exact", head: true });
+    let q = supabaseRead.from(table).select("*", { count: "exact", head: true });
     if (published) q = q.eq("status", "published");
     const { count: c } = await q;
     return c ?? 0;

@@ -1,4 +1,4 @@
-import { supabasePublic } from "../supabasePublic";
+import { supabaseRead } from "../supabaseRead";
 import { Topic } from "../types";
 
 function mapTopic(row: any): Topic {
@@ -12,7 +12,7 @@ function mapTopic(row: any): Topic {
 }
 
 export async function getTopics(): Promise<Topic[]> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("topics")
     .select("*")
     .order("sort_order", { ascending: true });
@@ -22,7 +22,7 @@ export async function getTopics(): Promise<Topic[]> {
 }
 
 export async function getTopicBySlug(slug: string): Promise<Topic | null> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("topics")
     .select("*")
     .eq("slug", slug)

@@ -1,4 +1,4 @@
-import { supabasePublic } from "../supabasePublic";
+import { supabaseRead } from "../supabaseRead";
 import { Article } from "../types";
 
 function mapArticle(row: any): Article {
@@ -22,7 +22,7 @@ function mapArticle(row: any): Article {
 // the filter below — the explicit .eq is just so this reads correctly and
 // fails obviously (empty array) rather than mysteriously if RLS is ever off.
 export async function getPublishedArticles(): Promise<Article[]> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("articles")
     .select("*")
     .eq("status", "published")
@@ -33,7 +33,7 @@ export async function getPublishedArticles(): Promise<Article[]> {
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("articles")
     .select("*")
     .eq("slug", slug)
@@ -45,7 +45,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 }
 
 export async function getArticlesByTopic(topicSlug: string): Promise<Article[]> {
-  const { data, error } = await supabasePublic
+  const { data, error } = await supabaseRead
     .from("articles")
     .select("*")
     .eq("topic_slug", topicSlug)
