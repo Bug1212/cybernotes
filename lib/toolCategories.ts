@@ -1,0 +1,17 @@
+export const TOOL_CATEGORIES = [
+  "Reconnaissance & OSINT",
+  "Vulnerability Scanning",
+  "Web Application Security",
+  "Network Security",
+  "Password/Security Auditing",
+  "Digital Forensics",
+  "Malware Analysis",
+  "SIEM & SOC",
+  "Cloud Security",
+  "Container/Kubernetes Security",
+  "Penetration Testing",
+  "Threat Intelligence",
+  "Incident Response",
+  "Cryptography",
+  "Wireless Security",
+] as const;
